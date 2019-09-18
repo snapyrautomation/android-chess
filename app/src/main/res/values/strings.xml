@@ -407,4 +407,7 @@
     <string name="toast_challenge_posted">Challenge posted</string>
     <string name="prefs_icsshowclocksummary">In the PGN, show the clock times on each move</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

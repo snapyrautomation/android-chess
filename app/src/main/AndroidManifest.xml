@@ -10,14 +10,16 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/ChessTheme">
-        <activity
-            android:name=".start"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat">
+        <activity android:name=".PlayActivity" android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".start"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -29,30 +31,34 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".start" />
         </activity>
-
         <activity
             android:name=".HtmlActivity"
-            android:label="@string/app_name_help"></activity>
+            android:label="@string/app_name_help" />
         <activity
             android:name=".main"
             android:label="@string/app_name_play">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/x-chess-pgn" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/x-chess-pgn" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/x-chess-fen" />
             </intent-filter>
 
@@ -66,6 +72,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main" />
@@ -76,6 +83,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main" />
@@ -86,10 +94,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/x-chess-fen" />
             </intent-filter>
 
@@ -103,16 +112,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.puzzle.puzzle"
+            android:name=".puzzle.puzzle"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".start" />
@@ -123,88 +134,96 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".puzzle.puzzle" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.puzzle.practice"
+            android:name=".puzzle.practice"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".start" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.ics.ICSClient"
+            android:name=".ics.ICSClient"
             android:label="@string/app_name_playonline"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".start" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.ics.ICSPrefs"
+            android:name=".ics.ICSPrefs"
             android:label="@string/preferences">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ics.ICSClient" />
-        </activity>
-        <!-- <service android:name="jwtc.android.chess.ics.ICSService"/> -->
+        </activity> <!-- <service android:name="jwtc.android.chess.ics.ICSService"/> -->
         <activity
-            android:name="jwtc.android.chess.ics.CustomCommands"
+            android:name=".ics.CustomCommands"
             android:label="@string/preferences">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ics.ICSPrefs" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.tools.pgntool"
+            android:name=".tools.pgntool"
             android:label="@string/app_name_pgntools">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".start" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.tools.FileListView"
+            android:name=".tools.FileListView"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".tools.pgntool" />
         </activity>
         <activity
-            android:name="jwtc.android.chess.tools.importactivity"
+            android:name=".tools.importactivity"
             android:label="@string/app_name_import">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/x-chess-pgn" />
             </intent-filter>
         </activity>
 
         <provider
-            android:name="MyPGNProvider"
+            android:name=".MyPGNProvider"
             android:authorities="jwtc.android.chess.MyPGNProvider"
             android:exported="false" />
         <provider
@@ -212,19 +231,22 @@
             android:authorities="jwtc.android.chess.puzzle.MyPuzzleProvider"
             android:exported="false" />
     </application>
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="false" />
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FULLSCREEN" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 </manifest>
