@@ -5,7 +5,12 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -28,6 +33,8 @@ import android.widget.TableRow;
 
 import java.util.ArrayList;
 
+import static android.view.DragEvent.ACTION_DRAG_EXITED;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,9 +46,10 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
     private final static String TAG = "BoardFragment";
     private ChessFieldView[] chessFieldViews = new ChessFieldView[64];
     private ArrayList<ChessPieceView> chessPieceViews = new ArrayList<ChessPieceView>();
-    private FrameLayout mainLayout;
-
+    private ChessFieldSelectionView chessFieldSelectionView;
+    private OrderedFrameLayout mainLayout;
     private OnFragmentInteractionListener mListener;
+    protected int fieldLength = 0;
 
     public BoardFragment() {
         // Required empty public constructor
@@ -60,6 +68,7 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
         AssetManager assetManager = activity.getAssets();
         SharedPreferences sharedPreferences = activity.getSharedPreferences("ChessPlayer", Activity.MODE_PRIVATE);
         BitmapCache.init(assetManager, sharedPreferences);
+        ColorScheme.init(sharedPreferences);
 
         mainLayout = activity.findViewById(R.id.MainBoardLayout);
 
@@ -73,6 +82,7 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
             chessFieldViews[i] = chessFieldView;
         }
 
+        chessFieldSelectionView = new ChessFieldSelectionView(activity);
 
         final Window window = activity.getWindow();
         final View contentView = window.getDecorView().findViewById(android.R.id.content);
@@ -123,29 +133,49 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
 
     @Override
     public boolean onDrag(View v, DragEvent event) {
+
+        ChessPieceView chessPieceView = (ChessPieceView) event.getLocalState();
+        ChessFieldView chessFieldView = v instanceof ChessFieldView ? (ChessFieldView) v : null;
+
         if(event.getAction() == DragEvent.ACTION_DRAG_STARTED){
-            Log.i(TAG, "drag started.");
+            if (chessFieldView != null) {
+                Log.i(TAG, "chessFieldView started " + chessFieldView.fieldIndex);
+//                chessFieldView.setUnselected();
+            }
             return true;
         }
         if(event.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-            Log.i(TAG, "drag entered source");
+            if (chessFieldView != null) {
+                Log.i(TAG, "chessFieldView entered " + chessFieldView.fieldIndex);
+
+                setSelectedField(chessFieldView, true, chessFieldView.fieldIndex % 2 == 0);
+            }
+            return true;
+        }
+        if (event.getAction() == ACTION_DRAG_EXITED) {
+            if (chessFieldView != null) {
+                Log.i(TAG, "chessFieldView left " + chessFieldView.fieldIndex);
+                setSelectedField(chessFieldView, false, false);
+            }
             return true;
         }
         if(event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
-//                    v.setX(event.getX());
-//                    v.setY(event.getY());
             return true;
         }
         if(event.getAction() == DragEvent.ACTION_DROP) {
-            ChessPieceView chessPieceView = (ChessPieceView)event.getLocalState();
-            chessPieceView.setX(v.getX());
-            chessPieceView.setY(v.getY());
-            Log.i(TAG, "DROP ENTERED");
-            return true;
-        }
-        else {
+            Log.i(TAG, "ACTION_DROP");
+            setSelectedField(chessFieldView, false, false);
+
+            if  (chessFieldView.fieldIndex % 2 == 0) {
+                chessPieceView.setX(v.getX());
+                chessPieceView.setY(v.getY());
+                chessPieceView.stopDragging();
+                return true;
+            }
+            chessPieceView.stopDragging();
             return false;
         }
+        return true;
     }
 
     /**
@@ -174,7 +204,7 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
                 //int titleBarHeight= contentViewTop - statusBarHeight;
                 int availableHeight = (rectangle.bottom - rectangle.top) - contentViewTop;
                 int availableWidth = rectangle.right - rectangle.left;
-                int boardLength, fieldLength, margin = 0;
+                int boardLength, margin = 0;
 
                 // portrait
                 if (availableHeight > availableWidth) {
@@ -187,14 +217,15 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
                 }
                 // RESET!!
                 mainLayout.removeAllViews();
+                //mainLayout.setChildrenDrawingOrderEnabled(true);
                 ViewGroup.LayoutParams mainLayoutParams = mainLayout.getLayoutParams();
                 mainLayoutParams.width = boardLength;
                 mainLayoutParams.height = boardLength;
                 mainLayout.setLayoutParams(mainLayoutParams);
                 Log.i(TAG, "adjust " + availableWidth + ", " + availableHeight + " - " + fieldLength + "  " + margin);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(fieldLength, fieldLength);
 
                 for (int i = 0; i < 64; i++) {
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(fieldLength, fieldLength);
                     ChessFieldView chessFieldView = chessFieldViews[i];
                     chessFieldView.setLayoutParams(layoutParams);
                     mainLayout.addView(chessFieldView);
@@ -202,7 +233,12 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
                     chessFieldView.setY(Pos.row(i) * fieldLength);
                 }
 
+                FrameLayout.LayoutParams layoutParamsSelection = new FrameLayout.LayoutParams(fieldLength * 2, fieldLength * 2);
+                chessFieldSelectionView.setLayoutParams(layoutParamsSelection);
+                mainLayout.addView(chessFieldSelectionView);
+
                 for (int i = 0; i < chessPieceViews.size(); i++) {
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(fieldLength, fieldLength);
                     ChessPieceView pieceView = chessPieceViews.get(i);
                     pieceView.setLayoutParams(layoutParams);
                     mainLayout.addView(pieceView);
@@ -219,9 +255,7 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
 
         Activity activity = getActivity();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(90, 90);
-        ChessPieceView pieceView = new ChessPieceView(activity);
-        pieceView.piece = ChessBoard.KING;
-        pieceView.color = ChessBoard.WHITE;
+        ChessPieceView pieceView = new ChessPieceView(activity, ChessBoard.KING, ChessBoard.WHITE);
 
         chessPieceViews.add(pieceView);
 
@@ -234,9 +268,11 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
             public boolean onTouch(View v, MotionEvent event) {
                 Log.i(TAG, "onTouch");
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    View.DragShadowBuilder bu = new View.DragShadowBuilder(v);
+                    MyDragShadowBuilder bu = new MyDragShadowBuilder(v);
                     ClipData clp = ClipData.newPlainText("", "");
                     v.startDrag(clp, bu, v, 0);
+                    ChessPieceView draggedPiece = (ChessPieceView)v;
+                    draggedPiece.startDragging();
                     return true;
                 } else {
                     return false;
@@ -257,5 +293,68 @@ public class BoardFragment extends Fragment implements View.OnDragListener {
 //                return false;
 //            }
 //        });
+    }
+
+    protected void setSelectedField(ChessFieldView chessFieldView, boolean isSelected, boolean isValid) {
+        if (isSelected) {
+            chessFieldView.setSelected();
+            float offset = -chessFieldSelectionView.getLayoutParams().width / 4;
+            chessFieldSelectionView.setX(Pos.col(chessFieldView.fieldIndex) * fieldLength + offset);
+            chessFieldSelectionView.setY(Pos.row(chessFieldView.fieldIndex) * fieldLength + offset);
+            chessFieldSelectionView.appearAt(isValid);
+        } else {
+            chessFieldView.setUnselected();
+            chessFieldSelectionView.dissapear();
+        }
+    }
+
+
+    private static class MyDragShadowBuilder extends View.DragShadowBuilder {
+
+        // The drag shadow image, defined as a drawable thing
+        private Point mScaleFactor;
+
+        // Defines the constructor for myDragShadowBuilder
+        public MyDragShadowBuilder(View v) {
+
+            // Stores the View parameter passed to myDragShadowBuilder.
+            super(v);
+
+        }
+
+        // Defines a callback that sends the drag shadow dimensions and touch point back to the
+        // system.
+        @Override
+        public void onProvideShadowMetrics (Point size, Point touch) {
+            // Defines local variables
+            int width, height;
+
+            // Sets the width of the shadow to half the width of the original View
+            width = getView().getWidth() * 2;
+
+            // Sets the height of the shadow to half the height of the original View
+            height = getView().getHeight() * 2;
+
+            // The drag shadow is a ColorDrawable. This sets its dimensions to be the same as the
+
+            // Sets the size parameter's width and height values. These get back to the system
+            // through the size parameter.
+            size.set(width, height);
+
+            mScaleFactor = size;
+
+            // Sets the touch point's position
+            touch.set(width / 2, height / 2);
+        }
+
+        // Defines a callback that draws the drag shadow in a Canvas that the system constructs
+        // from the dimensions passed in onProvideShadowMetrics().
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            canvas.scale(mScaleFactor.x/(float)getView().getWidth(), mScaleFactor.y/(float)getView().getHeight());
+//            BitmapCache.paint.setColor(ColorScheme.colorSelected);
+//            canvas.drawCircle(getView().getWidth()/2, getView().getHeight()/2, getView().getWidth()/2, BitmapCache.paint);
+            getView().draw(canvas);
+        }
     }
 }
