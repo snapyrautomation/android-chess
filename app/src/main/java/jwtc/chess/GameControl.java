@@ -314,7 +314,7 @@ try{
 	
 	public synchronized void play()
 	{
-		//Log.i("GameControl", "play() called");
+		Log.i("GameControl", "play() called");
 		if(_uci.isReady()){
 			if(getLevelMode() == LEVEL_PLY){
 				_uci.play(0, getLevelPly());

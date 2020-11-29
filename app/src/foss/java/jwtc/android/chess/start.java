@@ -20,6 +20,8 @@ import jwtc.android.chess.ics.ICSClient;
 import jwtc.android.chess.puzzle.practice;
 import jwtc.android.chess.puzzle.puzzle;
 import jwtc.android.chess.tools.pgntool;
+import com.segment.analytics.Analytics;
+import com.snapyr.sdk.SnapyrConnectionFactory;
 
 
 public class start extends Activity {
@@ -31,6 +33,14 @@ public class start extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SnapyrConnectionFactory snapyrConnectionFactory = new SnapyrConnectionFactory();
+        Analytics analytics = new Analytics.Builder(this, "my_write_key")
+                .connectionFactory(snapyrConnectionFactory)
+                .trackApplicationLifecycleEvents() // Enable this to record certain application events automatically!
+                .recordScreenViews() // Enable this to record screen views automatically!
+                .build();
+        Analytics.setSingletonInstance(analytics);
 
         SharedPreferences getData = getSharedPreferences("ChessPlayer", Context.MODE_PRIVATE);
         String myLanguage  	= getData.getString("localelanguage", "");
