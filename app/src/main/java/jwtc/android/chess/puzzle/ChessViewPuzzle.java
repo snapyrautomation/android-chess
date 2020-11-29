@@ -89,7 +89,7 @@ public class ChessViewPuzzle extends UI {
     }
 
     public ChessViewPuzzle(final Activity activity) {
-        super();
+        super(activity);
         _parent = (puzzle) activity;
         _view = new ChessViewBase(activity);
 

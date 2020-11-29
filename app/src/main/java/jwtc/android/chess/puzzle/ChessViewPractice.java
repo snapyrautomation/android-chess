@@ -82,7 +82,7 @@ public class ChessViewPractice extends UI {
     };
 
     public ChessViewPractice(final Activity activity) {
-        super();
+        super(activity);
         _parent = (practice) activity;
         _view = new ChessViewBase(activity);
 

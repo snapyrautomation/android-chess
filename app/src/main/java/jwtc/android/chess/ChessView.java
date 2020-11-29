@@ -38,6 +38,9 @@ import android.view.ViewTreeObserver;
 import android.widget.*;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.segment.analytics.Analytics;
+import com.segment.analytics.Properties;
+
 /**
  *
  */
@@ -122,7 +125,7 @@ public class ChessView extends UI {
 
 
     public ChessView(Activity activity) {
-        super();
+        super(activity);
         _parent = (ChessActivity) activity;
         _view = new ChessViewBase(activity);
 
@@ -199,7 +202,7 @@ public class ChessView extends UI {
             _butPlay.setOnClickListener(new OnClickListener() {
                 public void onClick(View arg0) {
                     if (m_bActive) {
-                        //Log.i("butPlay", _jni.getNumBoard() + "::" + _arrPGN.size());
+                        Log.i("butPlay", _jni.getNumBoard() + "::" + _arrPGN.size());
 
                         if (_jni.getNumBoard() < _arrPGN.size()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(_parent)
@@ -754,6 +757,7 @@ public class ChessView extends UI {
     @Override
     public void newGame() {
         super.newGame();
+
         clearPGNView();
     }
 
@@ -942,7 +946,7 @@ public class ChessView extends UI {
                         jumptoMove(_jni.getNumBoard());
                         updateState();
                         m_iFrom = -1;
-                        //Log.i("WAS MOVE PLAYED", "TRUE");
+                        Log.i("WAS MOVE PLAYED", "TRUE");
                         return true;
                     } else {
                         if (_imgStatusGuess != null) {
@@ -950,7 +954,7 @@ public class ChessView extends UI {
                         }
                         m_iFrom = -1;
                         paintBoard();
-                        //Log.i("WAS MOVE PLAYED", "FALSE");
+                        Log.i("WAS MOVE PLAYED", "FALSE");
                         return false;
                     }
                 }
@@ -1530,17 +1534,46 @@ public class ChessView extends UI {
 
 
     public void playNotification() {
-
+        Log.i("butPlay", _jni.getNumBoard() + "::" + _arrPGN.size());
         int move = _jni.getMyMove();
         String sMove = _jni.getMyMoveToString();
 
         if (sMove.contains("x")){
+            int turn = (_jni.getTurn() + 1) % 2;
+            int toPos = Move.getTo(move);
+            int fromPos = Move.getFrom(move);
+            int pieceAtTo = _jni.pieceAt(turn, toPos);
+            int pieceAtFrom = _jni.pieceAt(turn, fromPos);
+            Log.i("butPlay", "CAPTURE string=[" + sMove + "], move=["
+                    + move + "], fromPos=["+ fromPos +"], toPos=[" + toPos +
+                    "], pieceAtTo=[" + pieceAtTo + "], pieceAtFrom=[" +
+                    pieceAtFrom + "], turn=[" + turn + "]");
+
+            Analytics.with(_parent).identify("ubi42");
+            Properties properties = new Properties();
+            properties.putName("capture");
+            properties.putValue("move", sMove);
+            properties.putValue("orgId", "f95991da-ea9c-4e44-998d-5ff5f4ca04d3");
+            properties.putValue("workspaceId", "d00f0649-c6a4-475c-8eeb-518ae5f29768");
+            Analytics.with(_parent).track("capture", properties);
+
             _parent.soundCapture();
         } else {
             _parent.soundMove();
         }
 
         if (sMove.length() > 3 && !sMove.equals("O-O-O")) {
+
+            Properties properties = new Properties();
+            properties.putName("long_castle");
+            properties.putValue("favoriteString", "bar");
+            properties.putValue("favoriteNumber", 42);
+            properties.putValue("favoriteBool", true);
+            properties.putValue("orgId", "f95991da-ea9c-4e44-998d-5ff5f4ca04d3");
+            properties.putValue("workspaceId", "d00f0649-c6a4-475c-8eeb-518ae5f29768");
+            Analytics.with(_parent).track("long_castle", properties);
+
+
             // assures space to separate which Rook and which Knight to move
             sMove = sMove.substring(0, 2) + " " + sMove.substring(2, sMove.length());
         }
@@ -1577,7 +1610,9 @@ public class ChessView extends UI {
         if (Move.isEP(move)) {
             sMove = sMove + " On Pesawnt";  // En Passant
         }
-        //Log.i("ChessView", " 2nd sMove = " + sMove);
+
+
+        Log.i("ChessView", " 2nd sMove = " + sMove);
         _parent.soundNotification(sMove);
     }
 

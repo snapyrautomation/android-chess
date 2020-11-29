@@ -1,9 +1,15 @@
 package jwtc.android.chess;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import com.segment.analytics.Analytics;
+import com.segment.analytics.Properties;
+
 import jwtc.chess.*;
 import jwtc.chess.board.*;
 
@@ -14,9 +20,10 @@ public class UI extends GameControl {
 
 	// last mouse click position
 	protected int m_iFrom;
+	public Activity _activity;
 	
 	
-	// searchthread message handling
+	// searchthread message Analyhandling
 	public static final int MSG_MOVE = 1;
 	public static final int MSG_UCI_MOVE = 2;
 	public static final int MSG_PLAY = 3;
@@ -29,7 +36,8 @@ public class UI extends GameControl {
        	 	//Log.i(TAG, "searchThreadUpdateHandler ->" + msg.what);
        	 	// do move
 	       	 if(msg.what == MSG_MOVE){
-	       		 
+				 Log.i(TAG, "doMove ->" + msg.what);
+
 	       		 enableControl();
 	       		 int move = msg.getData().getInt("move");
 	       		 if(move == 0){
@@ -58,10 +66,11 @@ public class UI extends GameControl {
 
 	
 	
-	public UI()
+	public UI(Activity activity)
 	{
 		m_iFrom = -1;
 		m_bActive = true;
+		_activity = activity;
 	}
 	
 	public void start()
@@ -72,6 +81,12 @@ public class UI extends GameControl {
 	public void newGame()
 	{
 		super.newGame();
+		Analytics.with(_activity).identify("ubi42");
+		Properties properties = new Properties();
+		properties.putValue("orgId", "f95991da-ea9c-4e44-998d-5ff5f4ca04d3");
+		properties.putValue("workspaceId", "d00f0649-c6a4-475c-8eeb-518ae5f29768");
+		Analytics.with(_activity).track("new chess game", properties);
+		Log.i("main", "NEW GAME!!!!");
 		updateState();
 	}
 	public void undo()
