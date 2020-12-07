@@ -206,7 +206,9 @@
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				/>
+
 			</HorizontalScrollView>
+
 			
 			<ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:fadingEdge="none" android:padding="2dip"
@@ -231,6 +233,7 @@
 						android:layout_width="72dip" android:layout_height="40dip"
 					/>
 				</TableRow>
+
 			</TableLayout>
 			
 			<TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -250,7 +253,16 @@
 			</TableLayout>	
 			
 		</ViewAnimator>
-		
 	</RelativeLayout>
-	
+	<RelativeLayout
+		android:layout_width= "match_parent"
+		android:layout_height= "match_parent"
+		android:orientation= "vertical">
+		<WebView
+			android:id="@+id/SnapyrZone2"
+			android:layout_width= "wrap_content"
+			android:layout_height= "wrap_content"
+			android:layout_alignParentBottom= "true"
+			android:layout_centerHorizontal="true" />
+	</RelativeLayout>
 </RelativeLayout>
