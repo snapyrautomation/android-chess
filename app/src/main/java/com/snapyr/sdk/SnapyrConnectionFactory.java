@@ -32,6 +32,6 @@ public class SnapyrConnectionFactory extends ConnectionFactory {
      */
     protected HttpURLConnection openConnection(String url) throws IOException {
         Log.i("Snapyr", "Returning Snapyr connection!");
-        return super.openConnection("https://dev-engine.snapyr.com/v1/batch");
+        return super.openConnection("https://stage-engine.snapyr.com/v1/batch");
     }
 }
