@@ -37,7 +37,10 @@ public class start extends Activity {
 
         SnapyrConnectionFactory snapyrConnectionFactory = new SnapyrConnectionFactory();
         Analytics analytics = new Analytics.Builder(this, "my_write_key")
+<<<<<<< HEAD
                 .flushInterval(10, TimeUnit.MILLISECONDS)
+=======
+>>>>>>> e9b94d5eccb669bff90dd5e681a5920943dac846
                 .connectionFactory(snapyrConnectionFactory)
                 .trackApplicationLifecycleEvents() // Enable this to record certain application events automatically!
                 .recordScreenViews() // Enable this to record screen views automatically!

@@ -4,6 +4,7 @@ import jwtc.chess.*;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -28,8 +29,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 public class main extends ChessActivity implements OnInitListener, GestureDetector.OnGestureListener {
@@ -97,6 +98,17 @@ public class main extends ChessActivity implements OnInitListener, GestureDetect
         _dlgSave = null;
 
         _gestureDetector = new GestureDetector(this, this);
+
+        AlertDialog.Builder zone1 = new AlertDialog.Builder(this);
+        WebView webView = new WebView(this);
+        webView.loadUrl("https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-4.png");
+        zone1.setView(webView);
+        zone1.show();
+
+        WebView zone2 = (WebView) findViewById(R.id.SnapyrZone2);
+        zone2.loadUrl("https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-3.png");
+        zone2.setBackgroundColor(Color.TRANSPARENT);
+        zone2.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override

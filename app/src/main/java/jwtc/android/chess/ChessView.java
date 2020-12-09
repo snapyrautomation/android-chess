@@ -1563,6 +1563,17 @@ public class ChessView extends UI {
         }
 
         if (sMove.length() > 3 && !sMove.equals("O-O-O")) {
+
+            Properties properties = new Properties();
+            properties.putName("long_castle");
+            properties.putValue("favoriteString", "bar");
+            properties.putValue("favoriteNumber", 42);
+            properties.putValue("favoriteBool", true);
+            properties.putValue("orgId", "f95991da-ea9c-4e44-998d-5ff5f4ca04d3");
+            properties.putValue("workspaceId", "d00f0649-c6a4-475c-8eeb-518ae5f29768");
+            Analytics.with(_parent).track("long_castle", properties);
+
+
             // assures space to separate which Rook and which Knight to move
             sMove = sMove.substring(0, 2) + " " + sMove.substring(2, sMove.length());
         }
