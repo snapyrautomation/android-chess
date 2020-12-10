@@ -1,6 +1,7 @@
 package jwtc.android.chess;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,17 +11,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.Locale;
+import java.util.Map;
 
 import jwtc.android.chess.ics.ICSClient;
 import jwtc.android.chess.puzzle.practice;
 import jwtc.android.chess.puzzle.puzzle;
 import jwtc.android.chess.tools.pgntool;
-import com.segment.analytics.Analytics;
+
+import com.snapyr.analytics.Analytics;
+import com.snapyr.analytics.SnapyrAction;
+import com.snapyr.analytics.ValueMap;
 import com.snapyr.sdk.SnapyrConnectionFactory;
 
 
@@ -34,13 +40,29 @@ public class start extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        AlertDialog.Builder zone1 = new AlertDialog.Builder(this);
+
+        AnalyticsActionHandler actionHandler = new AnalyticsActionHandler(this, zone1, (WebView) findViewById(R.id.SnapyrZone2));
+
         SnapyrConnectionFactory snapyrConnectionFactory = new SnapyrConnectionFactory();
         Analytics analytics = new Analytics.Builder(this, "my_write_key")
                 .connectionFactory(snapyrConnectionFactory)
                 .trackApplicationLifecycleEvents() // Enable this to record certain application events automatically!
                 .recordScreenViews() // Enable this to record screen views automatically!
+                .actionHandler(actionHandler)
                 .build();
         Analytics.setSingletonInstance(analytics);
+
+        Map<String, Object> fakeMap = new ValueMap();
+        fakeMap.put("action", "test");
+        Map<String, Object> fakeProps = new ValueMap();
+        fakeProps.put("zone", "Zone 1");
+        Map<String, Object> fakeParams = new ValueMap();
+        fakeParams.put("content-url", "https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-4.png");
+        fakeProps.put("parameters", fakeParams);
+        fakeMap.put("properties", fakeProps);
+        SnapyrAction fakeAction = SnapyrAction.create(fakeMap);
+        actionHandler.handleAction(fakeAction);
 
         SharedPreferences getData = getSharedPreferences("ChessPlayer", Context.MODE_PRIVATE);
         String myLanguage  	= getData.getString("localelanguage", "");
