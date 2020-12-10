@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import jwtc.android.chess.ics.ICSClient;
 import jwtc.android.chess.puzzle.practice;
@@ -46,6 +47,7 @@ public class start extends Activity {
 
         SnapyrConnectionFactory snapyrConnectionFactory = new SnapyrConnectionFactory();
         Analytics analytics = new Analytics.Builder(this, "my_write_key")
+                .flushInterval(10, TimeUnit.MILLISECONDS)
                 .connectionFactory(snapyrConnectionFactory)
                 .trackApplicationLifecycleEvents() // Enable this to record certain application events automatically!
                 .recordScreenViews() // Enable this to record screen views automatically!

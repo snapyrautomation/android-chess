@@ -84,7 +84,7 @@ public class UI extends GameControl {
 		Analytics.with(_activity).identify("ubi42");
 		Properties properties = new Properties();
 		properties.putValue("orgId", "f95991da-ea9c-4e44-998d-5ff5f4ca04d3");
-		properties.putValue("workspaceId", "d00f0649-c6a4-475c-8eeb-518ae5f29768");
+		properties.putValue("workspaceId", "822fb5e2-6857-4082-9268-44f0a1f32250");
 		Analytics.with(_activity).track("new chess game", properties);
 		Log.i("main", "NEW GAME!!!!");
 		updateState();
