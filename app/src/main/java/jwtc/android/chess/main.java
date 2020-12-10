@@ -99,16 +99,6 @@ public class main extends ChessActivity implements OnInitListener, GestureDetect
 
         _gestureDetector = new GestureDetector(this, this);
 
-//        AlertDialog.Builder zone1 = new AlertDialog.Builder(this);
-//        WebView webView = new WebView(this);
-//        webView.loadUrl("https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-4.png");
-//        zone1.setView(webView);
-//        zone1.show();
-//
-//        WebView zone2 = (WebView) findViewById(R.id.SnapyrZone2);
-//        zone2.loadUrl("https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-3.png");
-//        zone2.setBackgroundColor(Color.TRANSPARENT);
-//        zone2.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override

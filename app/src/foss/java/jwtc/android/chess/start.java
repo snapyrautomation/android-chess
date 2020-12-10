@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -43,8 +44,8 @@ public class start extends Activity {
 
         AlertDialog.Builder zone1 = new AlertDialog.Builder(this);
 
-        AnalyticsActionHandler actionHandler = new AnalyticsActionHandler(this, zone1, (WebView) findViewById(R.id.SnapyrZone2));
-
+        AnalyticsActionHandler actionHandler = new AnalyticsActionHandler(this);
+        getApplication().registerActivityLifecycleCallbacks(actionHandler);
         SnapyrConnectionFactory snapyrConnectionFactory = new SnapyrConnectionFactory();
         Analytics analytics = new Analytics.Builder(this, "my_write_key")
                 .flushInterval(10, TimeUnit.MILLISECONDS)
@@ -55,22 +56,11 @@ public class start extends Activity {
                 .build();
         Analytics.setSingletonInstance(analytics);
 
-        Map<String, Object> fakeMap = new ValueMap();
-        fakeMap.put("action", "test");
-        Map<String, Object> fakeProps = new ValueMap();
-        fakeProps.put("zone", "Zone 1");
-        Map<String, Object> fakeParams = new ValueMap();
-        fakeParams.put("content-url", "https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-4.png");
-        fakeProps.put("parameters", fakeParams);
-        fakeMap.put("properties", fakeProps);
-        SnapyrAction fakeAction = SnapyrAction.create(fakeMap);
-        actionHandler.handleAction(fakeAction);
+        Locale current = getResources().getConfiguration().locale;
+        String language = current.getLanguage();
 
         SharedPreferences getData = getSharedPreferences("ChessPlayer", Context.MODE_PRIVATE);
         String myLanguage  	= getData.getString("localelanguage", "");
-
-        Locale current = getResources().getConfiguration().locale;
-        String language = current.getLanguage();
         if(myLanguage.equals("")){    // localelanguage not used yet? then use device default locale
             myLanguage = language;
         }
@@ -104,6 +94,26 @@ public class start extends Activity {
                         i.setClass(start.this, main.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(i);
+
+                        // Fake an action coming through with a slight delay to allow the Activity to start
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("Runnable", "Faking action");
+                                Map<String, Object> fakeMap = new ValueMap();
+                                fakeMap.put("action", "test");
+                                Map<String, Object> fakeProps = new ValueMap();
+                                fakeProps.put("zone", "Zone 2");
+                                Map<String, Object> fakeParams = new ValueMap();
+                                fakeParams.put("content-url", "https://static.ironsrc.com/wp-content/uploads/2017/12/Untitled-presentation-4.png");
+                                fakeProps.put("parameters", fakeParams);
+                                fakeMap.put("properties", fakeProps);
+                                SnapyrAction fakeAction = SnapyrAction.create(fakeMap);
+                                actionHandler.handleAction(fakeAction);
+                            }
+                        }, 500);
+
                     } else if (_ssActivity.equals(getString(R.string.start_practice))) {
                         i.setClass(start.this, practice.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
