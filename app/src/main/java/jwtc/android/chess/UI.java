@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.segment.analytics.Analytics;
-import com.segment.analytics.Properties;
+import com.snapyr.analytics.Analytics;
+import com.snapyr.analytics.Properties;
 
 import jwtc.chess.*;
 import jwtc.chess.board.*;

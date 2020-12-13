@@ -2,7 +2,7 @@ package com.snapyr.sdk;
 
 import android.util.Log;
 
-import com.segment.analytics.ConnectionFactory;
+import com.snapyr.analytics.ConnectionFactory;
 import java.net.HttpURLConnection;
 import java.io.IOException;
 import android.util.Base64;
